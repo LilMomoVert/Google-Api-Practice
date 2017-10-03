@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Google Maps</title>
+		<link rel="stylesheet" type="text/css" href="stylesheet.css">
+		<link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lobster|Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+	
+	</head>
+
+	<body>
+        
+    <script>
+            function initAutocomplete() {
+              var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 59.911491, lng: 10.757933},
+                zoom: 13,
+                mapTypeId: 'roadmap'
+              });
+
+
+
+          // Create the search box and link it to the UI element.
+          var input = document.getElementById('search');
+          var searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                
+            document.getElementById('findme').onclick = function() {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                    var pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent('DU ER HER!');
+                    infoWindow.open(map);
+                    map.setCenter(pos);
+                  }, function() {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                  });
+                } else {
+                  // Browser doesn't support Geolocation
+                  handleLocationError(false, infoWindow, map.getCenter());
+                }
+            }
+
+            document.getElementById('clearme').onclick = function() {        
+                markers.forEach(function(marker) {
+                  marker.setMap(null);
+                });
+            }
+
+          // Bias the SearchBox results towards current map's viewport.
+          map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+          });
+
+                  infoWindow = new google.maps.InfoWindow;
+
+                // Try HTML5 geolocation.
+
+
+
+              var markers = [];
+              // Listen for the event fired when the user selects a prediction and retrieve
+              // more details for that place.
+              searchBox.addListener('places_changed', function() {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                  return;
+                }
+
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                  if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                  }
+                  var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                  };
+
+                  // Create a marker for each place.
+                  markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                  }));
+
+                  if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                  } else {
+                    bounds.extend(place.geometry.location);
+                  }
+                });
+                map.fitBounds(bounds);
+              });
+        }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNPyXUsysQEatV4r4RC6XY6ffsW9wPSzU&libraries=places&callback=initAutocomplete">
+    </script>
+
+        <div>
+            <div id="menuWrapper">
+                <div id="menuContainer">
+                    <label for="show-menu" class="show-menu">Show Menu</label>
+                        <input type="checkbox" id="show-menu" role="button"/>
+                            <ul id="menu">
+                                <li><a href="#">Home</a>
+                                </li>
+                                <li>
+                                    <a href="#Problemet">Google Maps</a>
+
+                                </li>
+                                <li>
+                                    <a href="#findme">Your Position</a>
+                                </li>
+                                <li><a href="#howitworks">How it Works</a>
+                                </li>
+                                <li><a href="#conclusion">About</a>
+                                </li>
+                            </ul>
+                </div>
+            </div>
+        <header id="homepage">
+            <div id="darkshade">
+                <div id="darkshade2">
+                    
+                <div id='emptySpaceHeaderTop'>
+                </div>
+
+                <div id='headerTitle'>
+                    <div class ='headerTitleContainer'> 
+                        <span id="spantxt1">Findr</span> <br>
+                        <div id="span2">
+                        <span id="spantxt2">Locates your current position</span>
+                        </div>
+                    </div>
+                </div>
+            <div class="buttonWrapper">
+                <a href="#findme    ">
+                <button class="myButton" type="button">Find Now!</button> 
+                </a>
+                <a href="#DownloadApp">
+                <button class="myButton" type="button">
+                    Download now!
+                </button></a>
+            </div>
+            </div>
+            </div>
+        </header>
+
+			<section>
+				<article id="section1">
+                    
+					<div class="sectionContainer">
+						<h1 style="text-align: center;">
+							Find your Location!
+						</h1>
+                        <h4 style="text-align: center;">
+				            Basic Website that can locate your current location. You can also search for any location in the world. 
+						</h4>
+                        <hr>
+						<div class="sectionParagraph" style="margin: 0 auto;">
+                            <div>
+                                    <p style="width: 100%; color: white;"><strong>
+                                        <input id="findme" type="submit" name="findme" value="Find My Position"/>
+                                        <input id="clearme" type="submit" name="clearme" value="Clear Marker"/>
+                                        <input id="search" class="controls" type="text" placeholder="Search Box">
+                                            <div id="map"></div>
+                                </p>
+
+                            </div>
+						</div>
+					</div>
+				</article>
+                
+    </section>
+	</body>
+</html>
